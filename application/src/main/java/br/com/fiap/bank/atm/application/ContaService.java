@@ -1,5 +1,6 @@
 package br.com.fiap.bank.atm.application;
 
+import br.com.fiap.bank.atm.application.dto.CadastrarContaDTO;
 import br.com.fiap.bank.atm.application.dto.ContaDTO;
 import br.com.fiap.bank.atm.application.dto.MovimentacaoDTO;
 import br.com.fiap.bank.atm.domain.Cliente;
@@ -7,9 +8,10 @@ import br.com.fiap.bank.atm.domain.Conta;
 import br.com.fiap.bank.atm.domain.ContaAcesso;
 import br.com.fiap.bank.atm.domain.Dinheiro;
 import br.com.fiap.bank.atm.domain.Movimentacao;
-import br.com.fiap.bank.atm.domain.interfaces.ATMRepository;
+import br.com.fiap.bank.atm.domain.interfaces.ClienteRepository;
+import br.com.fiap.bank.atm.domain.interfaces.ContaAcessoRepository;
+import br.com.fiap.bank.atm.domain.interfaces.ContaRepository;
 import br.com.fiap.bank.atm.domain.interfaces.MovimentacaoRepository;
-import br.com.fiap.bank.atm.infrastructure.repository.ContaRepository;
 import br.com.fiap.bank.atm.infrastructure.repository.jdbc.ClienteRepositoryJdbcImpl;
 import br.com.fiap.bank.atm.infrastructure.repository.jdbc.ContaAcessoRepositoryJdbcImpl;
 import br.com.fiap.bank.atm.infrastructure.repository.jdbc.ContaRepositoryJdbcImpl;
@@ -21,14 +23,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-// Camada de serviço que fica entre o terminal e o modelo.
-// O terminal não chama a Conta diretamente — passa pelo service.
-// Isso evita que a tela saiba demais sobre como a conta funciona por dentro.
 public class ContaService {
 
-    private ATMRepository<Conta> contaRepository;
-    private ATMRepository<Cliente> clienteRepository;
-    private ATMRepository<ContaAcesso> contaAcessoRepository;
+    private ContaRepository contaRepository;
+    private ClienteRepository clienteRepository;
+    private ContaAcessoRepository contaAcessoRepository;
     private MovimentacaoRepository movimentacaoRepository;
 
     public ContaService() {
@@ -90,15 +89,18 @@ public class ContaService {
         return "";
     }
 
-    public void salvarConta(ContaDTO dto) {
+    public UUID salvarConta(CadastrarContaDTO dto) {
         Cliente cliente = new Cliente(dto.nomeCliente(), dto.cpfCliente());
         ContaAcesso contaAcesso = new ContaAcesso(dto.senha());
-        Dinheiro saldo = new Dinheiro(dto.saldo());
-        Conta conta = ContaFactory.getInstance().criarContaCorrente(cliente, contaAcesso, saldo);
+        Dinheiro saldo = new Dinheiro(dto.saldoInicial());
+        Conta conta = ContaFactory.getInstance().criarContaCorrente(dto.numero(), dto.agencia(), cliente, contaAcesso,
+                saldo);
 
         clienteRepository.adicionar(cliente);
         contaRepository.adicionar(conta);
         contaAcessoRepository.adicionar(contaAcesso);
+
+        return conta.getId();
     }
 
     public Optional<ContaDTO> buscarContaPorId(UUID idConta) {
