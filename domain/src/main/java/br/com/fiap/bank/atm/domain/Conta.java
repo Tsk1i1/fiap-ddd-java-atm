@@ -108,7 +108,7 @@ public abstract class Conta extends BaseEntity {
     // Protected para que as subclasses também possam registrar movimentações,
     // como ContaPoupanca que registra o rendimento mensal.
     protected void registrarMovimentacao(Dinheiro valor, TipoMovimentacao tipo) {
-        movimentacoes.add(new Movimentacao(LocalDateTime.now(), valor, tipo));
+        movimentacoes.add(new Movimentacao(this, LocalDateTime.now(), valor, tipo));
     }
 
     public Dinheiro getSaldo() {
