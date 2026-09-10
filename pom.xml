@@ -6,6 +6,14 @@
     <!-- Versão do modelo do POM -->
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Herança do Spring Boot para facilitar as versões das dependências web -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
     <!-- Coordenadas GAV (Identidade do Projeto) -->
     <groupId>br.com.fiap.bank</groupId>
     <artifactId>fiap-ddd-java-atm</artifactId>
@@ -26,4 +34,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+			  <!-- JUnit 5 para Testes Automatizados -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
