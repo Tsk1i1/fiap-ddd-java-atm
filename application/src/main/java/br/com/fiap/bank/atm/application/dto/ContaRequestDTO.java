@@ -2,7 +2,7 @@ package br.com.fiap.bank.atm.application.dto;
 
 import java.math.BigDecimal;
 
-public record CadastrarContaDTO(
+public record ContaRequestDTO(
                 String nomeCliente,
                 String cpfCliente,
                 String numero,
